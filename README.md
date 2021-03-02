@@ -1,5 +1,8 @@
 # xbc-clock (my-clock)
 
+番茄钟应用
+初始设置为 25 分钟专注 & 8 分钟休息
+
 ## Install the dependencies
 
 ```bash
