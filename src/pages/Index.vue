@@ -11,12 +11,34 @@
       {{ timeFm || "00:00" }}
     </div>
     <div class="btn_wrap row justify-between items-center">
-      <div class="col-6" @click="setIsCfg">config</div>
-      <div class="col-6" @click="timeStart">start</div>
+      <div class="col" @click="tools.sendIpcMsg('window-close')">quit</div>
+      <div class="col" @click="tools.sendIpcMsg('window-min')">minisize</div>
+      <div class="col" @click="setIsCfg">config</div>
+      <div class="col" @click="stopTime">stop</div>
+      <div class="col" @click="handleTimeEnd">relax</div>
+      <div class="col" @click="timeStart">start</div>
     </div>
-    <!-- <div class="cfg_panel">
-      <q-input v-model="text" type="text" label="Label" />
-    </div> -->
+    <div v-if="cfg.cfgIng" class="cfg_panel fixed-center column justify-around">
+      <q-input
+        @click.stop=""
+        v-model="cfg.attentionTime"
+        type="text"
+        label="专注时长"
+        suffix="分钟"
+        color="green"
+        class="text-green q-mx-md"
+      />
+      <q-input
+        @click.stop=""
+        v-model="cfg.relaxTime"
+        type="text"
+        label="休息时长"
+        suffix="分钟"
+        color="green"
+        class="text-green q-mx-md"
+      />
+      <div class="return row items-center justify-center q-mr-md" @click="setIsCfg">完成</div>
+    </div>
   </q-page>
 </template>
 
@@ -42,9 +64,20 @@ export default {
       return this.formatTime(second);
     }
   },
+  created() {
+    let cacheData = localStorage.getItem("cacheCfg");
+    if (cacheData) {
+      this.cfg = JSON.parse(cacheData);
+    }
+  },
   methods: {
     setIsCfg() {
-      this.cfg.cfgIng = !this.cfg.cfgIng;
+      const NEW_VAL = !this.cfg.cfgIng;
+      this.cfg.cfgIng = NEW_VAL;
+      if (!NEW_VAL) {
+        let data = JSON.stringify(this.cfg);
+        localStorage.setItem("cacheCfg", data);
+      }
     },
     timeStart() {
       if (this.intervalId) clearInterval(this.intervalId);
@@ -69,9 +102,12 @@ export default {
         this.second = this.cfg.relaxTime * 60;
         this.isFocusing = false;
       } else {
-        this.second = 0;
-        clearInterval(this.intervalId);
+        this.stopTime();
       }
+    },
+    stopTime() {
+      this.second = 0;
+      clearInterval(this.intervalId);
     },
     formatTime(second) {
       function formatBit(val) {
@@ -110,4 +146,20 @@ export default {
   div
     color: rgba(255,255,255,.1)
     text-align: center
+
+.cfg_panel
+  z-index: 1005
+  width: 80vw
+  height: 80vh
+  background: rgba(255,255,255,.4)
+  border-radius: 15px
+  .return
+    align-self: flex-end
+    opacity: .7
+    font-size: 14px
+    width: 70px
+    height: 30px
+    background: #000
+    border-radius: 4px
+    color: white
 </style>

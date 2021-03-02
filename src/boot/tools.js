@@ -2,8 +2,8 @@ import { Notify, date } from "quasar";
 const ipc = require("electron").ipcRenderer;
 
 function sendIpcMsg(msg) {
+  // console.info({ msg });
   ipc.send(msg);
-  // window-min
 }
 function showNotify(
   type,

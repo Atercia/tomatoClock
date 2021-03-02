@@ -57,13 +57,13 @@ function createWindow() {
 ipc.on("window-min", function() {
   mainWindow.minimize();
 });
-ipc.on("window-max", function() {
-  if (mainWindow.isMaximized()) {
-    mainWindow.restore();
-    return;
-  }
-  mainWindow.maximize();
-});
+// ipc.on("window-max", function() {
+//   if (mainWindow.isMaximized()) {
+//     mainWindow.restore();
+//     return;
+//   }
+//   mainWindow.maximize();
+// });
 ipc.on("window-close", function() {
   mainWindow.close();
 });
@@ -86,10 +86,6 @@ if (!process.env.DEV) {
     app.on("ready", createWindow);
     // if(config.screenOutput==1){
     // }
-
-    startAPIServer(config.apiPort, (cmd, data) => {
-      sendToRender(cmd, data);
-    });
   }
 } else {
   app.on("ready", createWindow);
