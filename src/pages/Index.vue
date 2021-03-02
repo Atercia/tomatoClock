@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center bg-black" style="min-height:50px;">
+  <q-page class="wrap_bg flex flex-center" :class="isFocusing?'wrap_bg':'wrap_bg2'" style="min-height:50px;">
     <!-- <img
       alt="Quasar logo"
       src="~assets/quasar-logo-full.svg"
@@ -119,7 +119,7 @@ export default {
         let val =
           // formatBit(Math.floor(time / 3600)) +
           // ":" +
-          formatBit(Math.floor(min / 60)) + ":" + formatBit(time % 60);
+          formatBit(Math.floor(min / 60)) + " " + formatBit(time % 60);
         return val;
       } // 定时器
       return formatSeconds(second);
@@ -132,9 +132,12 @@ export default {
   width: 100%
   height: 100%
   font-size: 200px
-  color: rgba(255,255,255,.3)
+  color: rgba(235,235,235,.35)
 .relax_status
-  color: rgba(135,255,234,.2)
+  color: rgba(135,255,234,.4)
+  text-shadow: 0px 1px 5px rgba(0,0,0,.5)
+  
+  // color: rgba(135,215,134,.3)
 .btn_wrap
   position: absolute
   bottom: 0
@@ -162,4 +165,12 @@ export default {
     background: #000
     border-radius: 4px
     color: white
+.wrap_bg,.wrap_bg2
+  background-repeat: no-repeat
+  background-size: 100% 100%
+
+.wrap_bg
+  background-image: url("../statics/bg/15.png")
+.wrap_bg2
+  background-image: url("../statics/bg/28.png")
 </style>
