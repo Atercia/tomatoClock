@@ -96,14 +96,14 @@ export default {
     },
     startTimeInterval() {
       this.intervalId = setInterval(() => {
-        let newVal = this.second - 3;
+        let newVal = this.second - 5;
 
         if (newVal > 0) {
           this.second = newVal;
           return;
         }
         this.handleTimeEnd();
-      }, 3000);
+      }, 5000);
     },
     handleTimeEnd() {
       const IS_START_RELAX = this.isFocusing;
@@ -139,23 +139,21 @@ export default {
 <style scoped lang="sass">
 .num_time
   width: 100%
-  height: 100%
-  font-size: 200px
+  top: 20px
+  position: relative
+  font-size: 180px
   color: rgba(235,235,235,.35)
-  // color: rgba(30,44,55,.9)
 .relax_status
   color: rgba(135,255,234,.6)
-  text-shadow: 0px 1px 5px rgba(0,0,0,.7)
+  text-shadow: 0px 11px 14px rgba(0, 0, 0, 0.5)
+  // text-shadow: 0px 1px 5px rgba(0,0,0,.7)
 
-  // color: rgba(135,215,134,.3)
 .btn_wrap
   position: absolute
   bottom: 0
-  // border-top: 2px solid rgba(255,0,0,.2)
   width: 100vw
   z-index: 999
   height: 50px
-  // background: white
   div
     color: rgba(30,44,55,.8)
     text-align: center
@@ -183,12 +181,17 @@ export default {
     color: white
 .wrap_bg,.wrap_bg2
   background-repeat: no-repeat
-  background-size: 100% 100%
+  // background-size: 100% 100%
   width: 100vw
   height: 100vh
 
 .wrap_bg
   background-image: url("../statics/bg/1.png")
+  background-position: 48% 5%
+  background-size: 190% 190%
+
 .wrap_bg2
   background-image: url("../statics/bg/2.jpg")
+  background-position: 100% 100%
+  background-size: 100% 100%
 </style>
