@@ -1,5 +1,9 @@
 <template>
-  <q-page class="wrap_bg flex flex-center" :class="isFocusing?'wrap_bg':'wrap_bg2'" style="min-height:50px;">
+  <q-page
+    class="wrap_bg flex flex-center"
+    :class="isFocusing ? 'wrap_bg' : 'wrap_bg2'"
+    style="min-height:50px;"
+  >
     <!-- <img
       alt="Quasar logo"
       src="~assets/quasar-logo-full.svg"
@@ -37,7 +41,12 @@
         color="green"
         class="text-green q-mx-md"
       />
-      <div class="return row items-center justify-center q-mr-md" @click="setIsCfg">完成</div>
+      <div
+        class="return row items-center justify-center q-mr-md"
+        @click="setIsCfg"
+      >
+        完成
+      </div>
     </div>
   </q-page>
 </template>
@@ -133,10 +142,11 @@ export default {
   height: 100%
   font-size: 200px
   color: rgba(235,235,235,.35)
+  // color: rgba(30,44,55,.9)
 .relax_status
-  color: rgba(135,255,234,.4)
-  text-shadow: 0px 1px 5px rgba(0,0,0,.5)
-  
+  color: rgba(135,255,234,.6)
+  text-shadow: 0px 1px 5px rgba(0,0,0,.7)
+
   // color: rgba(135,215,134,.3)
 .btn_wrap
   position: absolute
@@ -147,8 +157,14 @@ export default {
   height: 50px
   // background: white
   div
-    color: rgba(255,255,255,.1)
+    color: rgba(30,44,55,.8)
     text-align: center
+  div:hover
+    color: black
+    font-size: 2em
+    transition: all 0.5s
+    background: rgba(225, 225, 225, .3)
+    border-radius: 5px
 
 .cfg_panel
   z-index: 1005
@@ -168,9 +184,11 @@ export default {
 .wrap_bg,.wrap_bg2
   background-repeat: no-repeat
   background-size: 100% 100%
+  width: 100vw
+  height: 100vh
 
 .wrap_bg
-  background-image: url("../statics/bg/15.png")
+  background-image: url("../statics/bg/1.png")
 .wrap_bg2
-  background-image: url("../statics/bg/28.png")
+  background-image: url("../statics/bg/2.jpg")
 </style>
