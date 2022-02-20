@@ -2,7 +2,9 @@
   <q-page
     class="wrap_bg flex flex-center"
     style="min-height: 50px"
-    :style="`background-image: url('http://127.0.0.1:8081/public/bg/${bgIndex}.JPG')`"
+    :style="
+      `background-image: url('http://127.0.0.1:8081/public/bg/${bgIndex}.JPG')`
+    "
   >
     <!-- <img
       alt="Quasar logo"
@@ -14,13 +16,28 @@
     >
       {{ timeFm.m || "00" }} {{ timeFm.s || "00" }}
     </div>
-    <div class="btn_wrap row justify-between items-center overflow-hidden">
-      <div class="col" @click="tools.sendIpcMsg('window-close')">quit</div>
-      <div class="col" @click="tools.sendIpcMsg('window-min')">minisize</div>
-      <div class="col" @click="setIsCfg">config</div>
-      <div class="col" @click="stopTime">stop</div>
-      <div class="col" @click="handleTimeEnd">relax</div>
-      <div class="col" @click="timeStart">start</div>
+    <div class="btn_wrap column justify-end">
+      <content class="row justify-between items-center overflow-hidden">
+        <div class="col btn" @click="toPrevBgIndex">prev</div>
+        <!-- <div class="col-2" @click="toPrevBgIndex">{{bgIndex}}</div> -->
+        <q-input
+          @click.stop=""
+          v-model="bgIndex"
+          type="text"
+          color="green"
+          class="text-black"
+          style="width:50px;height:30px;font-size:20px"
+        />
+        <div class="col btn" @click="setNextBgIndex">next</div>
+      </content>
+      <content class="row justify-between items-center overflow-hidden">
+        <div class="col btn" @click="tools.sendIpcMsg('window-close')">quit</div>
+        <div class="col btn" @click="tools.sendIpcMsg('window-min')">mini</div>
+        <div class="col btn" @click="setIsCfg">config</div>
+        <div class="col btn" @click="stopTime">stop</div>
+        <div class="col btn" @click="handleTimeEnd">relax</div>
+        <div class="col btn" @click="timeStart">start</div>
+      </content>
     </div>
     <div v-if="cfg.cfgIng" class="cfg_panel fixed-center column justify-around">
       <q-input
@@ -83,22 +100,23 @@ export default {
         attentionTime: 25,
         cfgIng: false,
         bgMaxIndex: 20,
-        duration: 30,
+        duration: 30
       },
-      bgIndex: 1,
+      bgHistory: [0],
+      bgIndex: 1
     };
   },
   computed: {
     timeFm() {
       let { second } = this;
       return this.formatTime(second);
-    },
+    }
   },
   created() {
     let cacheData = localStorage.getItem("cacheCfg");
     if (cacheData) {
       this.cfg = JSON.parse(cacheData);
-      console.info('cache',this.cfg)
+      // console.info("cache", this.cfg);
     }
   },
   methods: {
@@ -116,14 +134,22 @@ export default {
       this.isFocusing = true;
       this.startTimeInterval();
     },
-    changeBgIndex() {
+    toPrevBgIndex() {
+      let len = this.bgHistory.length;
+      this.bgIndex = this.bgHistory[len - 1];
+      this.bgHistory.pop();
+    },
+    setNextBgIndex() {
+      this.bgHistory.push(this.bgIndex);
       this.bgIndex = Math.round(this.cfg.bgMaxIndex * Math.random());
-      console.info(this.cfg.bgMaxIndex,this.cfg.bgMaxIndex * Math.random(),this.bgIndex)
+      let len = this.bgHistory.length;
+      let maxHistory = 5;
+      if (len == maxHistory) this.bgHistory.length.Shift;
     },
     startTimeInterval() {
-      this.changeBgIndex();
+      this.setNextBgIndex();
       this.intervalId = setInterval(() => {
-        this.changeBgIndex();
+        this.setNextBgIndex();
         let newVal = this.second - this.cfg.duration;
 
         if (newVal > 0) {
@@ -134,7 +160,7 @@ export default {
       }, this.cfg.duration * 1000);
     },
     handleTimeEnd() {
-      this.changeBgIndex();
+      this.setNextBgIndex();
       const IS_START_RELAX = this.isFocusing;
       if (IS_START_RELAX) {
         this.second = this.cfg.relaxTime * 60;
@@ -157,18 +183,18 @@ export default {
         let min = Math.floor(time % 3600);
         let val = {
           m: formatBit(Math.floor(min / 60)),
-          s: formatBit(time % 60),
+          s: formatBit(time % 60)
         };
         return val;
       } // 定时器
       let res = formatSeconds(second);
       console.info({ res });
       return res;
-    },
-  },
+    }
+  }
 };
 </script>
-<style scoped lang="sass">
+<style lang="sass">
 .num_time
   width: 100%
   // top: 30px
@@ -187,11 +213,15 @@ export default {
   bottom: 0
   width: 100vw
   z-index: 999
-  height: 50px
-  div
-    color: rgba(30,44,55,.8)
+  color: rgba(30,44,55,.3)
+  input
+    text-align: center !important
+    color: rgba(30,44,55,.3)
+  .btn
+    font-weight: 600
     text-align: center
-  div:hover
+    height: 30px
+  .btn:hover
     color: black
     font-size: 1.5em
     transition: all 0.5s
