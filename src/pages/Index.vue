@@ -18,6 +18,9 @@
     </div>
     <div class="btn_wrap column justify-end">
       <content class="row justify-between items-center overflow-hidden">
+        <div class="col btn" @click="lockBg = !lockBg">
+          {{ lockBg ? "releaseBg" : "lockBg" }}
+        </div>
         <div class="col btn" @click="toPrevBgIndex">prev</div>
         <!-- <div class="col-2" @click="toPrevBgIndex">{{bgIndex}}</div> -->
         <q-input
@@ -28,10 +31,12 @@
           class="text-black"
           style="width:50px;height:30px;font-size:20px"
         />
-        <div class="col btn" @click="setNextBgIndex">next</div>
+        <div class="col btn" @click="toNextBgIndex">next</div>
       </content>
       <content class="row justify-between items-center overflow-hidden">
-        <div class="col btn" @click="tools.sendIpcMsg('window-close')">quit</div>
+        <div class="col btn" @click="tools.sendIpcMsg('window-close')">
+          quit
+        </div>
         <div class="col btn" @click="tools.sendIpcMsg('window-min')">mini</div>
         <div class="col btn" @click="setIsCfg">config</div>
         <div class="col btn" @click="stopTime">stop</div>
@@ -76,11 +81,19 @@
         color="green"
         class="text-green q-mx-md"
       />
-      <div
-        class="return row items-center justify-center q-mr-md"
-        @click="setIsCfg"
-      >
-        完成
+      <div class="full-width row justify-end">
+        <div
+          class="return row items-center justify-center q-mr-md"
+          @click="closeCfgDialog"
+        >
+          取消
+        </div>
+        <div
+          class="return row items-center justify-center q-mr-md"
+          @click="setIsCfg"
+        >
+          完成
+        </div>
       </div>
     </div>
   </q-page>
@@ -95,7 +108,6 @@ export default {
       second: 0,
       intervalId: null,
       cfg: {
-        // minute
         relaxTime: 8,
         attentionTime: 25,
         cfgIng: false,
@@ -103,6 +115,7 @@ export default {
         duration: 30
       },
       bgHistory: [0],
+      lockBg: false,
       bgIndex: 1
     };
   },
@@ -128,6 +141,9 @@ export default {
         localStorage.setItem("cacheCfg", data);
       }
     },
+    closeCfgDialog() {
+      this.cfg.cfgIng = false;
+    },
     timeStart() {
       if (this.intervalId) clearInterval(this.intervalId);
       this.second = this.cfg.attentionTime * 60;
@@ -136,20 +152,22 @@ export default {
     },
     toPrevBgIndex() {
       let len = this.bgHistory.length;
+      if (!len) return;
       this.bgIndex = this.bgHistory[len - 1];
       this.bgHistory.pop();
     },
-    setNextBgIndex() {
+    toNextBgIndex() {
+      if (this.lockBg) return;
       this.bgHistory.push(this.bgIndex);
       this.bgIndex = Math.round(this.cfg.bgMaxIndex * Math.random());
       let len = this.bgHistory.length;
-      let maxHistory = 5;
+      let maxHistory = 10;
       if (len == maxHistory) this.bgHistory.length.Shift;
     },
     startTimeInterval() {
-      this.setNextBgIndex();
+      this.toNextBgIndex();
       this.intervalId = setInterval(() => {
-        this.setNextBgIndex();
+        this.toNextBgIndex();
         let newVal = this.second - this.cfg.duration;
 
         if (newVal > 0) {
@@ -160,7 +178,7 @@ export default {
       }, this.cfg.duration * 1000);
     },
     handleTimeEnd() {
-      this.setNextBgIndex();
+      this.toNextBgIndex();
       const IS_START_RELAX = this.isFocusing;
       if (IS_START_RELAX) {
         this.second = this.cfg.relaxTime * 60;
@@ -188,13 +206,18 @@ export default {
         return val;
       } // 定时器
       let res = formatSeconds(second);
-      console.info({ res });
       return res;
     }
   }
 };
 </script>
 <style lang="sass">
+.wrap_bg
+  background-repeat: no-repeat
+  width: 100vw
+  height: 100vh
+  background-position: 100% 100%
+  background-size: 100% 100%
 .num_time
   width: 100%
   // top: 30px
@@ -208,25 +231,33 @@ export default {
   text-shadow: 0px 5px 8px rgba(0, 0, 0, 0.2)
   // text-shadow: 0px 1px 5px rgba(0,0,0,.7)
 
-.btn_wrap
-  position: absolute
-  bottom: 0
-  width: 100vw
-  z-index: 999
-  color: rgba(30,44,55,.3)
-  input
-    text-align: center !important
-    color: rgba(30,44,55,.3)
-  .btn
-    font-weight: 600
-    text-align: center
-    height: 30px
-  .btn:hover
-    color: black
-    font-size: 1.5em
-    transition: all 0.5s
-    background: rgba(225, 225, 225, .6)
-    border-radius: 5px
+.wrap_bg
+  .btn_wrap
+    position: absolute
+    bottom: 0
+    width: 100vw
+    z-index: 999
+    color: rgba(225, 225, 225, .6)
+    visibility: hidden
+    font-size: 1.4em
+    padding: 4px
+    input
+      text-align: center !important
+      color: rgba(225, 225, 225, .6)
+    .btn
+      // font-weight: 600
+      text-align: center
+      height: 40px
+    .btn:hover
+      color: rgba(30,44,55,1)
+      // font-size: 1.5em
+      transition: all 0.5s
+      border-radius: 5px
+      background: rgba(225, 225, 225, .6)
+.wrap_bg:hover
+  .btn_wrap
+    background: rgba(30,44,55,.8)
+    visibility: visible
 
 .cfg_panel
   z-index: 1005
@@ -243,14 +274,4 @@ export default {
     background: #000
     border-radius: 4px
     color: white
-.wrap_bg,.wrap_bg2
-  background-repeat: no-repeat
-  // background-size: 100% 100%
-  width: 100vw
-  height: 100vh
-
-.wrap_bg
-
-  background-position: 100% 100%
-  background-size: 100% 100%
 </style>

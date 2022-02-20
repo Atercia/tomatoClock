@@ -29,7 +29,7 @@ function createWindow() {
   setVideoServer();
   mainWindow = new BrowserWindow({
     width: 400,
-    height: 560,
+    height: 600,
     // height: 382,
     useContentSize: true,
     webPreferences: {
