@@ -1,8 +1,8 @@
 <template>
   <q-page
     class="wrap_bg flex flex-center"
-    :class="isFocusing ? 'wrap_bg' : 'wrap_bg2'"
-    style="min-height:50px;"
+    style="min-height: 50px"
+    :style="`background-image: url('http://127.0.0.1:8081/public/bg/${bgIndex}.JPG')`"
   >
     <!-- <img
       alt="Quasar logo"
@@ -12,9 +12,9 @@
       class="num_time font-din row items-center justify-center"
       :class="{ relax_status: !isFocusing }"
     >
-      {{ timeFm || "00:00" }}
+      {{ timeFm.m || "00" }} {{ timeFm.s || "00" }}
     </div>
-    <div class="btn_wrap row justify-between items-center">
+    <div class="btn_wrap row justify-between items-center overflow-hidden">
       <div class="col" @click="tools.sendIpcMsg('window-close')">quit</div>
       <div class="col" @click="tools.sendIpcMsg('window-min')">minisize</div>
       <div class="col" @click="setIsCfg">config</div>
@@ -41,6 +41,24 @@
         color="green"
         class="text-green q-mx-md"
       />
+      <q-input
+        @click.stop=""
+        v-model="cfg.bgMaxIndex"
+        type="number"
+        label="图片maxIndex"
+        suffix="序号"
+        color="green"
+        class="text-green q-mx-md"
+      />
+      <q-input
+        @click.stop=""
+        v-model="cfg.duration"
+        type="number"
+        label="时针变换频率"
+        suffix="秒"
+        color="green"
+        class="text-green q-mx-md"
+      />
       <div
         class="return row items-center justify-center q-mr-md"
         @click="setIsCfg"
@@ -63,20 +81,24 @@ export default {
         // minute
         relaxTime: 8,
         attentionTime: 25,
-        cfgIng: false
-      }
+        cfgIng: false,
+        bgMaxIndex: 20,
+        duration: 30,
+      },
+      bgIndex: 1,
     };
   },
   computed: {
     timeFm() {
       let { second } = this;
       return this.formatTime(second);
-    }
+    },
   },
   created() {
     let cacheData = localStorage.getItem("cacheCfg");
     if (cacheData) {
       this.cfg = JSON.parse(cacheData);
+      console.info('cache',this.cfg)
     }
   },
   methods: {
@@ -94,18 +116,25 @@ export default {
       this.isFocusing = true;
       this.startTimeInterval();
     },
+    changeBgIndex() {
+      this.bgIndex = Math.round(this.cfg.bgMaxIndex * Math.random());
+      console.info(this.cfg.bgMaxIndex,this.cfg.bgMaxIndex * Math.random(),this.bgIndex)
+    },
     startTimeInterval() {
+      this.changeBgIndex();
       this.intervalId = setInterval(() => {
-        let newVal = this.second - 5;
+        this.changeBgIndex();
+        let newVal = this.second - this.cfg.duration;
 
         if (newVal > 0) {
           this.second = newVal;
           return;
         }
         this.handleTimeEnd();
-      }, 5000);
+      }, this.cfg.duration * 1000);
     },
     handleTimeEnd() {
+      this.changeBgIndex();
       const IS_START_RELAX = this.isFocusing;
       if (IS_START_RELAX) {
         this.second = this.cfg.relaxTime * 60;
@@ -116,6 +145,7 @@ export default {
     },
     stopTime() {
       this.second = 0;
+      this.bgIndex = 1;
       clearInterval(this.intervalId);
     },
     formatTime(second) {
@@ -125,27 +155,31 @@ export default {
       } // 秒转时分秒，求模很重要，数字的下舍入
       function formatSeconds(time) {
         let min = Math.floor(time % 3600);
-        let val =
-          // formatBit(Math.floor(time / 3600)) +
-          // ":" +
-          formatBit(Math.floor(min / 60)) + " " + formatBit(time % 60);
+        let val = {
+          m: formatBit(Math.floor(min / 60)),
+          s: formatBit(time % 60),
+        };
         return val;
       } // 定时器
-      return formatSeconds(second);
-    }
-  }
+      let res = formatSeconds(second);
+      console.info({ res });
+      return res;
+    },
+  },
 };
 </script>
 <style scoped lang="sass">
 .num_time
   width: 100%
-  top: 20px
-  position: relative
-  font-size: 180px
+  // top: 30px
+  bottom: 50px
+  position: absolute
+  font-size: 140px
   color: rgba(235,235,235,.35)
+  text-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2)
 .relax_status
-  color: rgba(135,255,234,.6)
-  text-shadow: 0px 11px 14px rgba(0, 0, 0, 0.5)
+  color: rgba(135,255,234,.4)
+  text-shadow: 0px 5px 8px rgba(0, 0, 0, 0.2)
   // text-shadow: 0px 1px 5px rgba(0,0,0,.7)
 
 .btn_wrap
@@ -159,16 +193,16 @@ export default {
     text-align: center
   div:hover
     color: black
-    font-size: 2em
+    font-size: 1.5em
     transition: all 0.5s
-    background: rgba(225, 225, 225, .3)
+    background: rgba(225, 225, 225, .6)
     border-radius: 5px
 
 .cfg_panel
   z-index: 1005
   width: 80vw
   height: 80vh
-  background: rgba(255,255,255,.4)
+  background: rgba(255,255,255,.6)
   border-radius: 15px
   .return
     align-self: flex-end
@@ -186,12 +220,7 @@ export default {
   height: 100vh
 
 .wrap_bg
-  background-image: url("../statics/bg/1.png")
-  background-position: 48% 5%
-  background-size: 190% 190%
 
-.wrap_bg2
-  background-image: url("../statics/bg/2.jpg")
   background-position: 100% 100%
   background-size: 100% 100%
 </style>

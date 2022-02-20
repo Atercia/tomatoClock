@@ -1,5 +1,5 @@
 import { app, BrowserWindow, nativeTheme, ipcMain } from "electron";
-
+import { setVideoServer } from "./getfile";
 try {
   if (
     process.platform === "win32" &&
@@ -26,16 +26,17 @@ function createWindow() {
   /**
    * Initial window options
    */
+  setVideoServer();
   mainWindow = new BrowserWindow({
-    width: 600,
-    height: 350,
+    width: 400,
+    height: 560,
     // height: 382,
     useContentSize: true,
     webPreferences: {
       // Change from /quasar.conf.js > electron > nodeIntegration;
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: process.env.QUASAR_NODE_INTEGRATION,
-      nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION
+      nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION,
 
       // More info: /quasar-cli/developing-electron-apps/electron-preload-script
       // preload: path.resolve(__dirname, 'electron-preload.js')
@@ -44,7 +45,7 @@ function createWindow() {
     resizable: true,
     frame: false,
     // 应用加载完成后show
-    show: true
+    show: true,
   });
 
   mainWindow.loadURL(process.env.APP_URL);
@@ -54,7 +55,7 @@ function createWindow() {
   });
 }
 
-ipc.on("window-min", function() {
+ipc.on("window-min", function () {
   mainWindow.minimize();
 });
 // ipc.on("window-max", function() {
@@ -64,7 +65,7 @@ ipc.on("window-min", function() {
 //   }
 //   mainWindow.maximize();
 // });
-ipc.on("window-close", function() {
+ipc.on("window-close", function () {
   mainWindow.close();
 });
 
