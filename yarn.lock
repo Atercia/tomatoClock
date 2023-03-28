@@ -2857,6 +2857,11 @@ core-js-compat@^3.6.5, core-js-compat@^3.8.1, core-js-compat@^3.9.0:
     browserslist "^4.16.3"
     semver "7.0.0"
 
+core-js@^3.29.0:
+  version "3.29.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.29.1.tgz#40ff3b41588b091aaed19ca1aa5cb111803fa9a6"
+  integrity sha512-+jwgnhg6cQxKYIIjGtAHq2nwUOolo9eoFZ4sHfUH09BLXBgxnH4gA0zEd+t+BO2cNB8idaBtZFcFTRjQJRJmAw==
+
 core-js@^3.6.5:
   version "3.9.1"
   resolved "https://registry.npm.taobao.org/core-js/download/core-js-3.9.1.tgz#cec8de593db8eb2a85ffb0dbdeb312cb6e5460ae"
