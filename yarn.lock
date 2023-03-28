@@ -1063,10 +1063,10 @@
     core-js "^3.6.5"
     core-js-compat "^3.6.5"
 
-"@quasar/extras@^1.0.0":
-  version "1.9.18"
-  resolved "https://registry.npm.taobao.org/@quasar/extras/download/@quasar/extras-1.9.18.tgz?cache=0&sync_timestamp=1614432506901&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40quasar%2Fextras%2Fdownload%2F%40quasar%2Fextras-1.9.18.tgz#9a6b1aa644584dcb42c8ae2eba1534384bc3c3c0"
-  integrity sha1-mmsapkRYTctCyK4uuhU0OEvDw8A=
+"@quasar/extras@^1.15.11":
+  version "1.16.1"
+  resolved "https://registry.yarnpkg.com/@quasar/extras/-/extras-1.16.1.tgz#1be607c200c8426497b7a6de21056edb28ef122a"
+  integrity sha512-bRnWSC469Qogw0ceDVd0yTQVBQjyhV6L10EMixXK1dpOs9tWGKRVgyyGZ5DEBkDgyn4BeRuV5s5e9VrQdQPsOg==
 
 "@quasar/fastclick@1.1.4":
   version "1.1.4"
